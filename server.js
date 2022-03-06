@@ -1,34 +1,69 @@
-const express = require('express')
-const mongoose = require('mongoose')
+const express = require('express');
+const mongoose = require('mongoose');
+const bodyParser = require("body-parser");
 const ShortUrl = require('./models/shortUrl')
-const app = express()
+const cors = require('cors')
+const app = express();
 
 mongoose.connect('mongodb://localhost/urlShortener', {
   useNewUrlParser: true, useUnifiedTopology: true
 })
 
-app.set('view engine', 'ejs')
-app.use(express.urlencoded({ extended: false }))
+// app.set('view engine', 'ejs')
+app.use(cors());
+app.use(bodyParser.json());
 
-app.get('/', async (req, res) => {
-  const shortUrls = await ShortUrl.find()
-  res.render('index', { shortUrls: shortUrls })
+
+app.get('/link', async (req, res) => {
+  const shortUrls = await ShortUrl.find().then(res1 => {
+
+    res.status(200).json({
+      message: 'data fetch successfully',
+      succes: 1,
+      data: res1
+    });
+  }).catch(e => {
+    res.status(200).json({
+      message: e,
+      succes: 0,
+      data: ''
+    });
+  })
+  // res.render('index', { shortUrls: shortUrls })
 })
 
-app.post('/shortUrls', async (req, res) => {
-  await ShortUrl.create({ full: req.body.fullUrl })
-
-  res.redirect('/')
+app.post('/link', async (req, res) => {
+  // console.log(req.body)
+  await ShortUrl.create({ full: req.body.full }).then(() => {
+    res.status(201).json({
+      message: "Url added successfully",
+      success: 1,
+      data: []
+    });
+  }).catch(() => {
+    res.status(500).json({
+      message: "Something went to wrong",
+      success: 0,
+      data: []
+    });
+  })
 })
 
-app.get('/:shortUrl', async (req, res) => {
-  const shortUrl = await ShortUrl.findOne({ short: req.params.shortUrl })
+app.put('/link', async (req, res) => {
+  console.log(req.body);
+  const shortUrl = await ShortUrl.findOne({ short: req.body.shortUrl })
+
   if (shortUrl == null) return res.sendStatus(404)
 
   shortUrl.clicks++
-  shortUrl.save()
+  shortUrl.save().then(() => {
+    res.status(200).json({
+      message: "",
+      success: 1,
+      data: []
+    })
+  })
 
-  res.redirect(shortUrl.full)
 })
 
 app.listen(process.env.PORT || 5000);
