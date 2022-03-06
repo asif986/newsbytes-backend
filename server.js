@@ -6,12 +6,12 @@ const cors = require('cors')
 const app = express();
 
 //mongodb://localhost/urlShortener
-// 
-let d = mongoose.connect('mongodb+srv://gh0oDGGJbG8QbDfD:Benzi@321@testing.wyqfu.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', {
+mongoose.connect('mongodb+srv://gh0oDGGJbG8QbDfD:gh0oDGGJbG8QbDfD@testing.wyqfu.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', {
   useNewUrlParser: true, useUnifiedTopology: true
 }).then(r => {
-
-  console.log(r);
+  // console.log('success');
+}).catch(e => {
+  // console.log(e);
 })
 
 // app.set('view engine', 'ejs')
