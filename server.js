@@ -5,8 +5,13 @@ const ShortUrl = require('./models/shortUrl')
 const cors = require('cors')
 const app = express();
 
-mongoose.connect('mongodb://localhost/urlShortener', {
+//mongodb://localhost/urlShortener
+// 
+let d = mongoose.connect('mongodb+srv://gh0oDGGJbG8QbDfD:Benzi@321@testing.wyqfu.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', {
   useNewUrlParser: true, useUnifiedTopology: true
+}).then(r => {
+
+  console.log(r);
 })
 
 // app.set('view engine', 'ejs')
